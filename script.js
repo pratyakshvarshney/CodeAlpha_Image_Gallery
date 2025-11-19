@@ -3,22 +3,36 @@ const modalImg = document.getElementById("modalImage");
 const closeBtn = document.getElementById("closeBtn");
 const images = document.querySelectorAll(".gallery img");
 
-// Open Modal on Image Click
-images.forEach((img) => {
-  img.addEventListener("click", function() {
-    modal.style.display = "block";
-    modalImg.src = this.src;
+// Open modal when an image is clicked
+images.forEach(img => {
+  img.addEventListener("click", () => {
+    modal.style.display = "flex";
+    modal.setAttribute("aria-hidden", "false");
+    modalImg.src = img.src;
+    modalImg.alt = img.alt || "Expanded image";
+    // prevent page scroll while modal open
+    document.body.style.overflow = "hidden";
   });
 });
 
-// Close Modal on Close Button Click
-closeBtn.onclick = function() {
+// Close modal via close button
+closeBtn.addEventListener("click", () => {
   modal.style.display = "none";
-};
+  modal.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+  modalImg.src = "";
+});
 
-// Close Modal if Clicking Outside Image
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
+// Close modal by clicking outside the image
+modal.addEventListener("click", (e) => {
+  if (e.target === modal) {
+    closeBtn.click();
   }
-};
+});
+
+// Close modal on Escape key
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && modal.style.display === "flex") {
+    closeBtn.click();
+  }
+});
